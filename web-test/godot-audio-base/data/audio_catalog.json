@@ -1,0 +1,53 @@
+{
+  "_nota": "Para reemplazar cualquier audio basta con cambiar la ruta aquí. No hay rutas escritas en la lógica del juego.",
+  "level_seconds": 240,
+  "levels": {
+    "level_01": {
+      "name": "El Calafate",
+      "music": "res://audio/music/level_01_calafate.ogg",
+      "nature_bed": "res://audio/nature/calafate/bed.ogg",
+      "nature_accents": ["res://audio/nature/calafate/accent_01.ogg", "res://audio/nature/calafate/accent_02.ogg", "res://audio/nature/calafate/accent_03.ogg"],
+      "variations": ["res://audio/variations/level_01/stage_1.ogg", "res://audio/variations/level_01/stage_2.ogg", "res://audio/variations/level_01/stage_3.ogg", "res://audio/variations/level_01/stage_4.ogg", "res://audio/variations/level_01/stage_5.ogg"]
+    },
+    "level_02": {
+      "name": "Bariloche",
+      "music": "res://audio/music/level_02_bariloche.ogg",
+      "nature_bed": "res://audio/nature/bariloche/bed.ogg",
+      "nature_accents": ["res://audio/nature/bariloche/accent_01.ogg", "res://audio/nature/bariloche/accent_02.ogg"],
+      "variations": ["res://audio/variations/level_02/stage_1.ogg", "res://audio/variations/level_02/stage_2.ogg", "res://audio/variations/level_02/stage_3.ogg", "res://audio/variations/level_02/stage_4.ogg", "res://audio/variations/level_02/stage_5.ogg"]
+    },
+    "level_03": {
+      "name": "El Chaltén",
+      "music": "res://audio/music/level_03_chalten.ogg",
+      "nature_bed": "res://audio/nature/chalten/bed.ogg",
+      "nature_accents": ["res://audio/nature/chalten/accent_01.ogg", "res://audio/nature/chalten/accent_02.ogg"],
+      "variations": ["res://audio/variations/level_03/stage_1.ogg", "res://audio/variations/level_03/stage_2.ogg", "res://audio/variations/level_03/stage_3.ogg", "res://audio/variations/level_03/stage_4.ogg", "res://audio/variations/level_03/stage_5.ogg"]
+    },
+    "level_04": {
+      "name": "Ushuaia",
+      "music": "res://audio/music/level_04_ushuaia.ogg",
+      "nature_bed": "res://audio/nature/ushuaia/bed.ogg",
+      "nature_accents": ["res://audio/nature/ushuaia/accent_01.ogg", "res://audio/nature/ushuaia/accent_02.ogg"],
+      "variations": ["res://audio/variations/level_04/stage_1.ogg", "res://audio/variations/level_04/stage_2.ogg", "res://audio/variations/level_04/stage_3.ogg", "res://audio/variations/level_04/stage_4.ogg", "res://audio/variations/level_04/stage_5.ogg"]
+    },
+    "level_05": {
+      "name": "Puerto Madryn",
+      "music": "res://audio/music/level_05_madryn.ogg",
+      "nature_bed": "res://audio/nature/madryn/bed.ogg",
+      "nature_accents": ["res://audio/nature/madryn/accent_01.ogg", "res://audio/nature/madryn/accent_02.ogg"],
+      "variations": ["res://audio/variations/level_05/stage_1.ogg", "res://audio/variations/level_05/stage_2.ogg", "res://audio/variations/level_05/stage_3.ogg", "res://audio/variations/level_05/stage_4.ogg", "res://audio/variations/level_05/stage_5.ogg"]
+    }
+  },
+  "sfx": {
+    "jump":        {"path": "res://audio/gameplay/jump.ogg",        "bus": "Gameplay", "priority": 2, "cooldown_ms": 80},
+    "land":        {"path": "res://audio/gameplay/land.ogg",        "bus": "Gameplay", "priority": 1, "cooldown_ms": 120},
+    "photo":       {"path": "res://audio/gameplay/photo.ogg",       "bus": "Gameplay", "priority": 4, "cooldown_ms": 200},
+    "hurt":        {"path": "res://audio/gameplay/hurt.ogg",        "bus": "Gameplay", "priority": 5, "cooldown_ms": 300},
+    "collect":     {"path": "res://audio/gameplay/collect.ogg",     "bus": "Gameplay", "priority": 3, "cooldown_ms": 60},
+    "reward":      {"path": "res://audio/rewards/reward.ogg",       "bus": "Gameplay", "priority": 6, "cooldown_ms": 300},
+    "ui_click":    {"path": "res://audio/ui/click.ogg",             "bus": "UI",       "priority": 3, "cooldown_ms": 40},
+    "dialog_open": {"path": "res://audio/ui/dialog_open.ogg",       "bus": "UI",       "priority": 4, "cooldown_ms": 200},
+    "answer_ok":   {"path": "res://audio/ui/answer_ok.ogg",         "bus": "UI",       "priority": 5, "cooldown_ms": 200},
+    "answer_bad":  {"path": "res://audio/ui/answer_bad.ogg",        "bus": "UI",       "priority": 5, "cooldown_ms": 200}
+  }
+}

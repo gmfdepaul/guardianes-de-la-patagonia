@@ -1,0 +1,19 @@
+GUARDIANES DE LA PATAGONIA
+Resumen del proyecto
+
+Juego 2D de plataformas y exploración, protagonizado por Pascacio. Cinco mundos:
+1. El Calafate — Los Glaciares.
+2. Bariloche — Nahuel Huapi.
+3. El Chaltén — Los Glaciares, sector norte.
+4. Ushuaia — Tierra del Fuego.
+5. Puerto Madryn — Península Valdés.
+
+En cada mundo hay cuatro personajes principales: fauna, flora, objeto/elemento y cultura. Los NPC permanecen en lugares definidos, hacen movimientos característicos, detectan a Pascacio, conversan y proponen desafíos. No siguen al protagonista.
+
+Controles: joystick flotante izquierdo, salto y cámara a la derecha. Se permiten cinco fotos por escenario, guardadas en el bolso de Pascacio y asociadas a puntos, insignias o fichas educativas. El juego se diseña en horizontal y debe pedir girar el teléfono cuando corresponda.
+
+La composición prioriza el paisaje, con parallax de varias capas. Los personajes se ubican en el recorrido y deben mantener un tamaño coherente en los cinco mundos.
+
+Tecnología propuesta: Godot 4, GDScript, exportación web y backend futuro con Supabase para email, progreso y ranking.
+
+Consultar GDD_Guardianes_de_la_Patagonia.md para el detalle completo. Los prototipos HTML están excluidos por pedido del usuario.

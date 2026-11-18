@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Guardianes"><meta name="theme-color" content="#0b1d2a"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/svg+xml" href="icon.svg"><link rel="apple-touch-icon" href="icon-180.png">
+<title>Guardianes de la Patagonia — Prototipo jugable v1.18</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="menu">
+<script>try{ document.fonts.load('1em "Lilita One"').then(f=>{ if(f&&f.length) document.body.classList.add('lilita'); }).catch(()=>{}); }catch(e){}</script>
+<canvas id="c"></canvas>
+
+<div class="hud" id="topleft">
+  <div id="faceWrap" role="button" aria-label="Menú del juego" title="Menú"><canvas id="face" width="116" height="116"></canvas><span class="fbadge">☰</span></div>
+  <div id="hearts"></div>
+  <div class="chip"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#f6c343" stroke="#7a4a00" stroke-width="1.4" stroke-linejoin="round" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="score">000000</span></div>
+  <div class="chip" style="font-size:15px;padding:4px 12px 4px 8px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M9 7V4h6v3M7 7l1 13h8l1-13M10 11v6M14 11v6"/></svg><span id="trashCt">0/6</span></div>
+</div>
+<div class="hud" id="topright">
+  <div class="chip" id="timer"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/></svg><span id="tm">0:00</span><span id="tb"></span></div>
+  <div class="chip"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.6"/></svg><span id="photos">0/5</span></div>
+  <button class="iconbtn" id="rwBtn" aria-label="Recompensas" style="background:linear-gradient(#ffd45a,#f0a81c);border-color:#6a3f06"><svg viewBox="0 0 24 24" fill="none" stroke="#3a2300" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><rect x="3.5" y="9" width="17" height="11" rx="1.5" fill="#fff4d6"/><rect x="2.5" y="6" width="19" height="4" rx="1.2" fill="#e5483a"/><path d="M12 6v14"/><path d="M12 6C10 2.5 6 3 7 5.5c.6 1.3 3 .6 5 .5zM12 6c2-3.5 6-3 5 -.5-.6 1.3-3 .6-5 .5z" fill="#e5483a"/></svg></button>
+</div>
+<div class="hud" id="state"></div>
+
+<div id="lz"></div>
+<div id="stickBase"><div id="stickKnob"></div></div>
+
+<div class="btn" id="bPhoto" aria-label="Foto"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.6"/></svg></div>
+<div class="btn" id="bJump" aria-label="Saltar"><svg viewBox="0 0 24 24" fill="#fff" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3l8 9h-5v9H9v-9H4z"/></svg></div>
+<div class="btn" id="bTalk" aria-label="Brújula: hablar con el personaje cercano"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="#c88a2e" stroke="#4a2a08" stroke-width="5"/><circle cx="50" cy="50" r="36" fill="#fff4d6" stroke="#4a2a08" stroke-width="3"/><path d="M50 17v7M50 76v7M17 50h7M76 50h7" stroke="#4a2a08" stroke-width="3" stroke-linecap="round"/><g id="needle"><path d="M50 21L58 50H42z" fill="#d93a2b" stroke="#4a2a08" stroke-width="2.5" stroke-linejoin="round"/><path d="M50 79L58 50H42z" fill="#f6f1e3" stroke="#4a2a08" stroke-width="2.5" stroke-linejoin="round"/></g><circle cx="50" cy="50" r="5.5" fill="#f6c343" stroke="#4a2a08" stroke-width="2.5"/><circle cx="80" cy="80" r="15" fill="#2f7fd6" stroke="#0f2c55" stroke-width="3.5"/><text x="80" y="87.5" text-anchor="middle" font-size="21" font-weight="900" fill="#fff" font-family="Trebuchet MS,Segoe UI,sans-serif">E</text></svg></div>
+
+<div id="talkPrompt">E · Hablar</div>
+<div id="dialog"><span class="name" id="dName">Don Poncho</span><div class="box"><span id="dText"></span><div id="dOpts"></div><span class="hint">Tocá para seguir ▸</span></div></div>
+
+<div id="rewards"><div class="rwbox">
+  <div class="rwhead"><h2>Recompensas de Pascacio</h2><div class="chip"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#f6c343" stroke="#7a4a00" stroke-width="1.4" stroke-linejoin="round" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg><span id="rwScore">0</span></div><button class="audBtn" id="audBtn2" aria-label="Sonido"></button><button class="x" id="rwClose" aria-label="Cerrar">✕</button></div>
+  <div class="tabs"><button class="on" data-tab="tabShop">Tienda de ayuda</button><button data-tab="tabCfg">Menú</button></div>
+  <div class="rwbody">
+    <div id="tabShop">
+      <div class="shoptop"><span class="grow">Gastá tus estrellas. Las estrellas se juntan en cada mundo y se gastan en ese mundo: guardá las justas para el objeto de misión.</span><label><input type="checkbox" id="editMode"> Modo edición (precios y valores)</label></div>
+      <div id="shopGrid"></div>
+      <div class="rwfoot"><button class="go" id="plus">+500 puntos de prueba</button><button class="sec" id="rsCat">Restablecer precios y valores</button><button class="sec" id="rsBuy">Borrar compras</button></div>
+    </div>
+    <div id="tabCfg" style="display:none">
+      <div id="sliders"></div>
+      <label style="font-weight:700"><input type="checkbox" id="dbg"> Mostrar datos técnicos</label>
+      <div id="modeNow" style="margin-top:10px;font-weight:800;color:#1b4f95"></div>
+      <div class="row"><button id="reset">Restablecer valores</button><button class="sec" data-board>🏆 Tabla de posiciones</button><button class="sec" id="toMenu">Menú principal</button><button class="sec" id="home">Volver al inicio</button><button class="sec" id="full">Pantalla completa</button></div>
+      <div class="keys"><b>Teclado:</b> ← → o A D mover · Shift correr · ↓ o S agacharse · Espacio, ↑ o W saltar (mantenido con Pluma: planear) · F foto · E hablar (brújula) · Esc recompensas<br><b>Táctil:</b> joystick flotante a la izquierda (empujalo hasta el borde para correr), botones a la derecha.</div>
+      <div class="note">Animación provisional: se usan las dos poses aprobadas de Pascacio con movimiento procedural. Las animaciones definitivas llegan con los spritesheets.</div>
+    </div>
+  </div>
+</div></div>
+
+<div id="toast"></div>
+<div id="flash"></div>
+<button class="mbtn sec" id="subExit">↩ Volver al nivel</button>
+<div class="modal" id="rangerScene" style="position:fixed;z-index:31"><div class="gcard">
+  <div class="gscene"><div id="rArt"></div><img id="rPas" alt="Guardaparque"><div class="gbub" id="rSay"></div></div>
+  <div class="gpanel"><div class="gh" id="rTitle"></div><div class="rbonus" id="rBonus"></div><p class="rdesc" id="rDesc"></p>
+    <div class="gbtns"><button class="mbtn" id="rEnter">¡Entrar al subnivel!</button><button class="mbtn sec" id="rLater">Ahora no</button></div>
+  </div></div></div>
+<div class="modal" id="subTuto" style="position:fixed;z-index:32"><div class="gcard">
+  <div class="gscene"><div class="tdemo ice" id="tDemo"><div class="tlane"></div><div class="tobs"></div><img id="tPas" class="tp" alt=""><div class="tjoy"><i></i></div></div></div>
+  <div class="gpanel"><div class="gh" id="tTitle"></div><ol class="tsteps" id="tSteps"></ol>
+    <div class="gbtns"><button class="mbtn" id="tGo">¡Entendido, a jugar!</button><button class="mbtn sec" id="tBack">Atrás</button></div>
+  </div></div></div>
+<div class="modal" id="subDone" style="position:fixed;z-index:31"><div class="mcard" style="max-width:480px"><header><h2 id="sdT">¡Subnivel completado!</h2></header><div class="body" style="text-align:center"><p id="sdB" style="font-size:17px;font-weight:800"></p><button class="mbtn" id="sdOk">Volver al nivel</button></div></div></div>
+<div id="mini"><div class="mcard2"><div class="mh"><b id="miniT"></b><span id="miniS"></span></div><p id="miniI"></p><div id="miniA"></div><div id="miniB"></div></div></div>
+<div class="modal" id="interlude" style="position:fixed;z-index:34"><div class="mcard" style="max-width:660px"><header><h2 id="ilT">Desafío del camino</h2></header><div class="body"><div id="ilBody"></div><div style="display:flex;gap:10px;justify-content:center;margin-top:10px"><button class="mbtn sec" id="ilSkip">Saltar</button></div></div></div></div>
+<div class="modal" id="finale"><div class="fin">
+  <div style="font-size:44px">🏔️🦅🏆</div>
+  <h1>¡Felicidades!</h1>
+  <h1 style="font-size:clamp(18px,4vh,28px);color:#fff;text-shadow:none">Te has convertido en Guardián de la Patagonia</h1>
+  <div class="fcard"><b>¿Qué es la Patagonia?</b> Es el extremo sur de Sudamérica, entre la cordillera de los Andes y el océano Atlántico. Reúne glaciares, lagos turquesa, bosques andinos y subantárticos, estepa y costas con fauna marina. Es una región enorme y con muy poca gente, y por eso todavía conserva paisajes y animales únicos que hay que cuidar.</div>
+  <div class="fcard"><b>Tu recorrido, mundo por mundo:</b>
+   <div class="fplace" style="margin-top:8px"><span class="em">🧊</span><div><b>El Calafate · Parque Nacional Los Glaciares.</b> Caminaste junto al glaciar Perito Moreno, que desciende al Lago Argentino. El parque es Patrimonio Mundial de la UNESCO.</div></div>
+   <div class="fplace" style="margin-top:8px"><span class="em">🌲</span><div><b>Bariloche · Parque Nacional Nahuel Huapi.</b> Exploraste lagos, montañas y bosques de arrayanes. Es el parque nacional más antiguo de la Argentina (1934).</div></div>
+   <div class="fplace" style="margin-top:8px"><span class="em">⛰️</span><div><b>El Chaltén · sector norte de Los Glaciares.</b> Recorriste senderos al pie del Fitz Roy, en la capital nacional del trekking. Allí vive el huemul, un ciervo amenazado.</div></div>
+   <div class="fplace" style="margin-top:8px"><span class="em">🌧️</span><div><b>Ushuaia · Parque Nacional Tierra del Fuego.</b> Atravesaste bosques subantárticos y turberas junto al Canal Beagle, en la ciudad más austral del mundo, el "fin del mundo".</div></div>
+   <div class="fplace" style="margin-top:8px"><span class="em">🐋</span><div><b>Puerto Madryn · Península Valdés.</b> Llegaste a la costa patagónica de acantilados y playas, donde llegan las ballenas francas australes. Es Patrimonio Mundial de la UNESCO.</div></div>
+  </div>
+  <div class="fcard" id="finStats" style="text-align:center"></div>
+  <div class="fcard" style="text-align:center">Ser Guardián es cuidar lo que visitás: quedarte en los senderos, no alimentar ni perseguir animales, no dejar residuos y respetar cada hábitat. 💚</div>
+  <div class="fbtns"><button class="mbtn" id="finBoard">🏆 Ver tabla de posiciones</button><button class="mbtn sec" id="finHome">Volver al inicio</button></div>
+</div></div>
+<div class="modal" id="result" style="position:fixed;z-index:18"><div class="mcard" style="max-width:560px"><header><h2 id="rsT">¡Nivel completado!</h2></header><div class="body"><div id="rsBody"></div><div style="display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap"><button class="mbtn" id="rsNext" style="display:none">Siguiente mundo ▸</button><button class="mbtn" id="rsAgain">Jugar otra vez</button><button class="mbtn don" data-donate>♥ Donar</button><button class="mbtn sec" id="rsMenu">Menú principal</button></div></div></div></div>
+<div class="modal" id="m_board" style="position:fixed;z-index:35"><div class="mcard" style="max-width:520px"><header><h2 id="bdT">🏆 Tabla de posiciones</h2><button class="x" id="bdX" aria-label="Cerrar">✕</button></header><div class="body">
+  <p id="bdSub" style="font-weight:700;margin:0 0 4px"></p><div id="bdList"></div>
+  <p id="bdNote" style="font-size:12.5px;opacity:.7;margin:6px 0 10px"></p>
+  <div class="gbtns"><button class="mbtn" id="bdOk">Seguir</button></div>
+</div></div></div>
+<div class="modal" id="m_donate" style="position:fixed;z-index:40"><div class="mcard" style="max-width:520px"><header><h2>♥ Apoyá el proyecto</h2><button class="x" id="donClose" aria-label="Cerrar">✕</button></header><div class="body" style="text-align:center">
+  <p>Guardianes de la Patagonia es un <b>proyecto personal y gratuito</b>. Si te gustó la aventura, tu aporte ayuda a seguir creando los próximos mundos.</p>
+  <button class="mbtn don big" id="donGo">Ir a donar</button>
+  <p id="donNote" style="font-size:13px;color:#8a4a00;margin-top:10px"></p>
+</div></div></div>
+<div class="modal" id="gateScene" style="position:fixed;z-index:30"><div class="gcard">
+  <div class="gscene"><div id="gArt"></div><img id="gPas" alt=""><div class="gbub" id="gSay"></div></div>
+  <div class="gpanel"><div class="gh" id="gTitle"></div>
+    <div class="gitem"><div class="gic" id="gIcon"></div><div><b id="gName"></b><span id="gDesc"></span></div></div>
+    <div class="gprice"><span>Precio: <b id="gPrice"></b></span><span>Tus estrellas: <b id="gStars"></b></span></div>
+    <div class="gbar"><i id="gFill"></i></div><p id="gHint"></p>
+    <div class="gbtns"><button class="mbtn" id="gBuy"></button><button class="mbtn sec" id="gLater">Seguir juntando estrellas</button></div>
+  </div></div></div>
+<div class="modal" id="signInfo" style="position:fixed;z-index:31"><div class="mcard" style="max-width:560px"><header><h2 id="siT"></h2><button class="x" id="siX" aria-label="Cerrar">✕</button></header><div class="body">
+  <div class="gitem" style="margin-bottom:10px"><div class="gic" id="siIcon"></div><div><b id="siName"></b><span id="siDesc"></span></div></div>
+  <p id="siHow" style="font-size:16px;line-height:1.4;margin:6px 0 10px"></p>
+  <div class="gprice"><span>Precio: <b id="siPrice"></b></span><span>Tus estrellas: <b id="siStars"></b></span></div>
+  <div class="gbar"><i id="siFill"></i></div><p id="siHint" style="margin:8px 0 12px"></p>
+  <div class="gbtns"><button class="mbtn" id="siShop">🎁 Ir a Recompensas</button><button class="mbtn sec" id="siOk">Entendido</button></div>
+</div></div></div>
+<div class="modal" id="m_full" style="position:fixed;z-index:46"><div class="mcard" style="max-width:520px"><header><h2>Pantalla completa</h2><button class="x" id="fullClose" aria-label="Cerrar">✕</button></header><div class="body"><p style="font-size:15px;font-weight:800;margin:0 0 6px">Tu navegador no permite pantalla completa desde el juego. Así la activás en el iPhone:</p><ol style="margin:0;padding-left:20px;font-size:14.5px;font-weight:700;line-height:1.45"><li>Abrí el juego en <b>Safari</b> (no dentro de otra app).</li><li>Tocá <b>Compartir</b> <span aria-hidden="true">⬆︎</span> → <b>Añadir a pantalla de inicio</b>.</li><li>Abrí el juego desde ese ícono: queda <b>sin barras</b>, a pantalla completa.</li></ol><p style="font-size:13px;margin:8px 0 0;opacity:.85">Con el celular en horizontal, Safari también esconde la barra al deslizar hacia arriba.</p></div></div></div>
+<div class="modal" id="m_audio" style="position:fixed;z-index:45"><div class="mcard" style="max-width:520px"><header><h2>Sonido</h2><button class="x" id="audClose" aria-label="Cerrar">✕</button></header><div class="body">
+  <label class="arow"><span>Música y ambiente</span><input type="checkbox" id="aMusic"></label>
+  <label class="arow"><span>Efectos de sonido</span><input type="checkbox" id="aSfx"></label>
+  <label class="arow"><span>Silenciar todo el juego</span><input type="checkbox" id="aMute"></label>
+  <label class="arow"><span>Volumen general</span><input type="range" id="aVol" min="0" max="100"></label>
+  <label class="arow"><span>Música</span><input type="range" id="aMus" min="0" max="100"></label>
+  <label class="arow"><span>Ambiente</span><input type="range" id="aNat" min="0" max="100"></label>
+  <p style="font-size:13px;color:#6a4a2a;margin:8px 0">El juego funciona igual sin sonido: todo aviso importante también aparece en pantalla. Música y efectos son provisorios.</p>
+  <button class="mbtn" id="aTest">Probar sonido</button>
+</div></div></div>
+<div id="menu">
+  <button class="fsb" id="fsBtn" aria-label="Pantalla completa" title="Pantalla completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <button class="audBtn" id="audBtn" aria-label="Sonido"></button>
+  <div id="scrTitle">
+    <div class="ver">v1.18 · © 2026 Gabriel Ferreira De Paul · Todos los derechos reservados</div>
+    <div class="logo"><small>Aventura educativa</small><h1>Guardianes <span>de la</span> Patagonia</h1></div>
+    <div class="mrow">
+      <button class="mb main" data-go="worlds">Iniciar juego</button>
+      <button class="mb" data-go="info">Guardianes de la Patagonia<br><small style="font-weight:700;opacity:.85">información</small></button>
+      <button class="mb" data-go="tuto">Tutorial</button>
+      <button class="mb don" data-donate>♥ Donar</button>
+      <button class="mb" data-go="exit">Salir</button>
+    </div>
+    <button class="blink" data-board style="left:auto;right:14px;transform:none;bottom:calc(clamp(46px,15vh,66px) + 28px)">🏆 Tabla de posiciones</button>
+  </div>
+  <div id="scrWorlds" style="display:none">
+    <button class="blink" data-board style="left:14px;right:auto;transform:none;bottom:10px;z-index:4">🏆 Tabla de posiciones</button>
+    <button id="backBtn2" data-go="title">← Volver</button>
+    <div id="worldsHead">Elegí un mundo</div>
+    <div id="mapBox"><svg class="mapsvg" id="mapSvg" viewBox="0 0 844 390" preserveAspectRatio="none"></svg>
+      <svg id="mapInset" viewBox="0 0 50 112"></svg>
+      <div class="mcards" id="worldCards"></div></div>
+  </div>
+  <div id="scrModes" style="display:none">
+    <button id="backBtn" data-go="worlds">← Volver</button>
+    <div id="modesHead">Elegí tu modo de aventura</div>
+    <div class="mcards">
+      <button class="mc t" data-mode="turista"><b>Turista</b><span class="st">★☆☆</span><span class="l">Ideal desde los 4 años</span><span class="l">Pocos obstáculos, muy fáciles de saltar</span><span class="l">Preguntas simples · errar no quita vidas</span></button>
+      <button class="mc v" data-mode="viajero"><b>Viajero</b><span class="st">★★☆</span><span class="l">Ideal desde los 10 años</span><span class="l">Obstáculos moderados</span><span class="l">Preguntas medias · errar no quita vidas</span></button>
+      <button class="mc e" data-mode="explorador"><b>Explorador</b><span class="st">★★★</span><span class="l">Ideal desde los 15 años</span><span class="l">Todos los obstáculos, más desafiantes</span><span class="l">Preguntas difíciles · errar cuesta un corazón</span></button>
+    </div>
+  </div>
+
+  <div class="modal" id="m_info"><div class="mcard"><header><h2>Guardianes de la Patagonia</h2><button class="x" data-close aria-label="Cerrar">✕</button></header><div class="body">
+    <p><b>Pascacio</b>, un joven explorador, recorre cinco mundos inspirados en la Patagonia argentina: <b>El Calafate, Bariloche, El Chaltén, Ushuaia y Puerto Madryn</b>.</p>
+    <p>Cada mundo está pensado para resolverse en <b>menos de 4 minutos</b>: obstáculos, una pregunta y un minijuego con cada uno de sus 4 personajes.</p>
+    <p>En cada uno explora paisajes, conoce la flora y la fauna, conversa con personajes, responde preguntas, toma fotografías y cuida el ambiente. La meta: convertirse en <b>Guardián de la Patagonia</b>.</p>
+    <p><b>El código del Guardián</b></p>
+    <ul class="code"><li>Llevá tu basura con vos</li><li>No alimentes a los animales</li><li>No los persigas</li><li>No salgas de los senderos</li><li>No recolectes plantas</li><li>Respetá los hábitats</li></ul>
+    <p style="font-size:13px;color:#6a4a2a">Esta versión de prueba incluye solo un tramo de El Calafate (Parque Nacional Los Glaciares). Proyecto personal e independiente.</p>
+  </div></div></div>
+
+  <div class="modal" id="m_tuto"><div class="mcard"><header><h2>Tutorial</h2><button class="x" data-close aria-label="Cerrar">✕</button></header><div class="body">
+    <div class="tgrid">
+      <div class="tc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div><div><b>Moverte</b><span>Deslizá el dedo en la mitad izquierda: aparece un joystick. Empujalo hasta el borde para correr. En compu: flechas o A D, Shift para correr.</span></div></div>
+      <div class="tc"><div class="ic"><svg viewBox="0 0 24 24" fill="#fff" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3l8 9h-5v9H9v-9H4z"/></svg></div><div><b>Saltar</b><span>Botón de la flecha (Espacio). Mantenelo apretado para saltar más alto.</span></div></div>
+      <div class="tc"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.6"/></svg></div><div><b>Fotografiar</b><span>Tenés 5 fotos por mundo (tecla F). Elegí bien: se guardan en tu bolso.</span></div></div>
+      <div class="tc"><div class="ic" style="background:#c88a2e;border-color:#4a2a08"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#fff4d6" stroke="#4a2a08" stroke-width="2"/><path d="M12 4l2.6 8h-5.2z" fill="#d93a2b"/><path d="M12 20l2.6-8H9.4z" fill="#f6f1e3" stroke="#4a2a08" stroke-width="1"/></svg></div><div><b>La brújula</b><span>La aguja te marca la basura y a los personajes. Cuando late, tocala (o tecla E) para recoger o conversar.</span></div></div>
+      <div class="tc"><div class="ic" style="background:#2e8b3a;border-color:#103d16"><svg viewBox="0 0 24 24"><path fill="#e53935" stroke="#fff" stroke-width="1.8" stroke-linejoin="round" d="M12 21s-8.5-5.3-8.5-11.2A4.8 4.8 0 0 1 12 7.2a4.8 4.8 0 0 1 8.5 2.6C20.5 15.7 12 21 12 21z"/></svg></div><div><b>Obstáculos y vidas</b><span>Saltá los matorrales espinosos y las bolas rodadoras. Si los tocás, perdés un corazón. Tenés 3.</span></div></div>
+      <div class="tc"><div class="ic" style="background:#f0a81c;border-color:#6a3f06"><svg viewBox="0 0 24 24" fill="none" stroke="#3a2300" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11" rx="1.5" fill="#fff4d6"/><rect x="2.5" y="6" width="19" height="4" rx="1.2" fill="#e5483a"/><path d="M12 6v14"/></svg></div><div><b>Recompensas</b><span>El regalo de arriba a la derecha abre la tienda: gastá tus estrellas en objetos de ayuda.</span></div></div>
+      <div class="tc"><div class="ic" style="background:#a8683a;border-color:#3b2410"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M5 7h14M5 12h14M5 17h9"/></svg></div><div><b>Personajes, preguntas y juegos</b><span>En cada mundo conocés 4 personajes. Cada uno te hace una pregunta y te propone un minijuego. La dificultad depende del modo.</span></div></div>
+      <div class="tc"><div class="ic" style="background:#17405f;border-color:#0a1c2b"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/></svg></div><div><b>Menos de 4 minutos</b><span>El reloj de arriba cuenta tu tiempo. Si llegás a la meta antes de los 4:00, ganás una bonificación.</span></div></div>
+    </div>
+  </div></div></div>
+
+  <div class="modal" id="gameOver" style="position:fixed;z-index:42"><div class="mcard" style="max-width:460px"><header><h2>💔 ¡Te quedaste sin vidas!</h2></header><div class="body" style="text-align:center">
+  <p style="margin:2px 0 10px;font-weight:700">No pasa nada, Guardián: los exploradores aprenden de cada intento. ¿Qué querés hacer?</p>
+  <div class="pmList">
+    <button class="mbtn" id="goLevel">⟲ Volver a jugar el nivel</button>
+    <button class="mbtn sec" id="goStart">⏮ Volver a jugar desde el inicio</button>
+    <button class="mbtn warn" id="goQuit">🚪 Abandonar el juego</button>
+  </div></div></div></div>
+<div class="modal" id="pauseMenu"><div class="mcard" style="max-width:480px"><header><h2>Pausa</h2><button class="x" id="pmClose" aria-label="Cerrar">✕</button></header><div class="body">
+  <div class="pmList">
+    <button class="mbtn" id="pmResume">▶ Continuar</button>
+    <button class="mbtn sec" id="pmRestart">⟲ Reiniciar este mundo</button>
+    <button class="mbtn sec" id="pmWorlds">🗺 Elegir otro mundo</button>
+    <button class="mbtn sec" id="pmHome">🏠 Menú principal</button>
+    <button class="mbtn sec" id="pmSound">🔊 Sonido</button>
+    <button class="mbtn sec" id="pmFull">⛶ Pantalla completa</button>
+    <button class="mbtn warn" id="pmExit">🚪 Salir de la aplicación</button>
+  </div></div></div></div>
+  <div class="modal" id="m_exit"><div class="mcard" style="max-width:520px"><header><h2>¡Hasta pronto, Guardián!</h2></header><div class="body" style="text-align:center">
+    <p>Gracias por jugar. Para salir, cerrá esta pestaña o la aplicación.</p>
+    <p style="font-size:13px;color:#6a4a2a">(Los navegadores no permiten que un juego cierre la ventana por sí solo.)</p>
+    <button class="go" id="exitBack">Volver</button>
+  </div></div></div>
+</div>
+
+<div id="rotate"><div id="rcol"></div><div class="rshade"></div><div id="rchars"></div>
+  <div class="rlogo"><small>Aventura educativa</small><h1>Guardianes <span>de la</span> Patagonia</h1></div>
+  <div class="rscene"><div class="rpas"><div class="rbub2"><span id="rTxt"></span><i class="rcur"></i></div><img id="rotPas" alt="Pascacio"></div>
+    <div class="rphone"><svg viewBox="0 0 100 100"><path d="M14 30 A38 38 0 0 1 84 22" fill="none" stroke="#ffd45a" stroke-width="5" stroke-linecap="round"/><path d="M86 8 L85 27 L67 24" fill="none" stroke="#ffd45a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="ph"><i></i></div></div></div>
+  <div class="rtext"><small class="rs">Mové el celu a horizontal para poder jugar</small></div>
+</div>
+<div id="loading">Cargando aventura…</div>
+
+<script src="js/game.js"></script>
+</body>
+</html>
