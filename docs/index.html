@@ -464,7 +464,7 @@
 </div></div></div>
 <div class="modal" id="m_donate" style="position:fixed;z-index:40"><div class="mcard" style="max-width:520px"><header><h2>♥ Apoyá el proyecto</h2><button class="x" id="donClose" aria-label="Cerrar">✕</button></header><div class="body" style="text-align:center">
   <p>Guardianes de la Naturaleza es un <b>proyecto personal y gratuito</b>. Si te gustó la aventura, tu aporte ayuda a crear los próximos parques y regiones.</p>
-  <button class="mbtn don big" id="donGo">Ir a donar</button>
+  <a class="mbtn don big" id="donGo" href="https://www.paypal.me/gmfdepaul" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none">Ir a donar</a>
   <p id="donNote" style="font-size:13px;color:#8a4a00;margin-top:10px"></p>
 </div></div></div>
 <div class="modal" id="gateScene" style="position:fixed;z-index:30"><div class="gcard">
@@ -2412,7 +2412,7 @@ function finishLevel(){
 document.querySelectorAll("[data-donate]").forEach(b=>b.addEventListener("click",()=>{ $("m_donate").classList.add("on"); }));
 $("donClose").addEventListener("click",()=>$("m_donate").classList.remove("on"));
 $("donGo").disabled=!DONATE_URL; $("donNote").textContent=DONATE_URL?"":"El enlace de donación todavía no está configurado.";
-$("donGo").addEventListener("click",()=>{ if(DONATE_URL) window.open(DONATE_URL,"_blank","noopener"); });
+$("donGo").addEventListener("click",e=>{ if(!DONATE_URL) e.preventDefault(); else $("donGo").href=DONATE_URL; });
 $("rsAgain").addEventListener("click",()=>startGame(mode));
 const IL_KEYS=["poncho","notrito","glaciarito","kallfu","pudu","arrayanin","chocolatin","lafken","huemul","calafatin","fitz","kallfun","pinguino","lenguita","farolito","yagan","ballenita","jarillita","boyita","aman"];
 const shuf=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
